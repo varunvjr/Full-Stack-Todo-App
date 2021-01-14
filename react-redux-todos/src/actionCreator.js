@@ -1,0 +1,56 @@
+export const ADD_TODO="add_todo";
+export const REMOVE_TODO="remove_todo";
+export const GET_TODOS="GET_TODOS";
+function handleTodos(data){
+    return{
+        type:"GET_TODOS",
+        data
+    }
+}
+  function handleAdd(todo){
+    return {
+        type:ADD_TODO,
+        todo
+    }
+}
+ function handleRemove(id){
+    return{
+        type:REMOVE_TODO,
+        id
+    }
+}
+
+export function getTodos(){
+    return dispatch=>{
+        return fetch("http://localhost:3001/api/todos")
+        .then(todos=>todos.json())
+        .then(data=>dispatch(handleTodos(data)))
+        .catch(err=>console.log("Something went wrong",err))
+    };
+}
+
+export function addTodo(task){
+    return dispatch=>{
+        return fetch("http://localhost:3001/api/todos",{
+            method:"POST",
+            headers:new Headers({
+                "Content-type":"application/json"
+            }),
+            body:JSON.stringify({task})
+        })
+        .then(res=>res.json())
+        .then(data=>dispatch(handleAdd(data)))
+        .catch(err=>console.log("Something went wrong",err))
+    };
+}
+
+export function removeTodo(id){
+    return dispatch=>{
+        return fetch(`http://localhost:3001/api/todos/${id}`,{
+            method:"DELETE"
+        })
+        .then(res=>res.json())
+        .then(data=>dispatch(handleRemove(id)))
+        .catch(err=>console.log("Something went wrong",err))
+    }
+}
